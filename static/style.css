@@ -54,3 +54,14 @@ th {
         font-size: 12px;
     }
 }
+.container {
+    display: flex;
+    justify-content: space-between; /* left, center, right */
+    align-items: center;
+}
+
+
+.box {
+    padding: 10px;
+    border: 1px solid #333;
+}

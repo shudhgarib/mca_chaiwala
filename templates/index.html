@@ -9,7 +9,10 @@
 
 <body>
 
-<h2>☕ Tea / Coffee Orders</h2>
+<h2 style="text-align: center; background-color: rgb(241, 241, 241);">☕ Tea / Coffee Orders</h2>
+
+
+<div class="container">
 
 <!-- 🔐 LOGIN BUTTON -->
 {% if not admin %}
@@ -35,13 +38,41 @@
     <button type="submit">Add Order</button>
 </form>
 
-<a href="/logout">Logout</a>
+<a href="/logout"><button>Logout</button></a>
 {% endif %}
 
+<!-- code for search bar start -->
+<input type="text"
+       id="searchInput"
+       placeholder="Search customer name..."
+       onkeyup="searchByName()"
+       style="padding:8px; width:250px;">
+<!-- code for search bar end -->
+
+<!-- code for Filter start -->
+ <div style="margin-bottom:10px;">
+    <select id="salesFilter" onchange="applySalesFilter()">
+        <option value="">Select Sales Filter</option>
+        <option value="today">Today Sales</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="last_week">Last Week</option>
+        <option value="last_month">Last Month</option>
+        <option value="custom">Custom Date</option>
+    </select>
+
+    <input type="date"
+           id="customSalesDate"
+           style="display:none; margin-left:8px;"
+           onchange="filterCustomSalesDate()">
+</div>
+
+<!-- code for Filter end -->
+
+</div>
 <hr>
 
 <!-- 📊 PUBLIC TABLE (Mobile hidden) -->
-<table border="1" cellpadding="6">
+<table id="orderTable" border="1" cellpadding="6">
 <tr>
     <th>Name</th>
     <th>Tea</th>
@@ -64,6 +95,80 @@
 </tr>
 {% endfor %}
 </table>
+<script>
+    // for search bar script start 
+    function searchByName() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let table = document.getElementById("orderTable");
+        let rows = table.getElementsByTagName("tr");
+        
+        for (let i = 1; i < rows.length; i++) {
+            let nameCell = rows[i].getElementsByTagName("td")[0];
+            if (!nameCell) continue;
+            
+            let name = nameCell.textContent.toLowerCase();
+            rows[i].style.display = name.includes(input) ? "" : "none";
+        }
+    }
+    // for search bar script end
+
+    
+    // for filter script start
+    function applySalesFilter() {
+    let filter = document.getElementById("salesFilter").value;
+    let rows = document.querySelectorAll("#orderTable tr");
+    let today = new Date();
+    today.setHours(0,0,0,0);
+
+    let customInput = document.getElementById("customSalesDate");
+    customInput.style.display = filter === "custom" ? "inline-block" : "none";
+
+    rows.forEach((row, index) => {
+        if (index === 0) return;
+
+        let rowDate = new Date(row.cells[5].innerText.trim());
+        rowDate.setHours(0,0,0,0);
+
+        let diffDays = Math.floor((today - rowDate) / (1000 * 60 * 60 * 24));
+        let show = false;
+
+        if (filter === "today" && diffDays === 0) show = true;
+        if (filter === "yesterday" && diffDays === 1) show = true;
+        if (filter === "last_week" && diffDays <= 7) show = true;
+        if (filter === "last_month" && diffDays <= 30) show = true;
+        if (filter === "") show = true;
+
+        if (filter !== "custom") {
+            row.style.display = show ? "" : "none";
+        }
+    });
+}
+
+function filterCustomSalesDate() {
+    let selected = document.getElementById("customSalesDate").value;
+    if (!selected) return;
+
+    let selectedDate = new Date(selected);
+    selectedDate.setHours(0,0,0,0);
+
+    let rows = document.querySelectorAll("#orderTable tr");
+
+    rows.forEach((row, index) => {
+        if (index === 0) return;
+
+        let rowDate = new Date(row.cells[5].innerText.trim());
+        rowDate.setHours(0,0,0,0);
+
+        row.style.display =
+            rowDate.getTime() === selectedDate.getTime()
+            ? ""
+            : "none";
+    });
+}
+    // for filter script end
+
+
+</script>
 
 </body>
 </html>
