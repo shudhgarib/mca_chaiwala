@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    padding: 20px;
+}
+
+h2 {
+    color: #38bdf8;
+}
+
+.order-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.order-form input,
+.order-form select,
+.order-form button {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+}
+
+button {
+    background: #38bdf8;
+    color: black;
+    cursor: pointer;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    border-bottom: 1px solid #334155;
+    text-align: center;
+}
+
+th {
+    color: #22d3ee;
+}
+
+@media (max-width: 600px) {
+    th, td {
+        font-size: 12px;
+    }
+}
